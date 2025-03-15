@@ -9,7 +9,9 @@ import com.rawend.demo.Repository.UserRepository;
 import com.rawend.demo.dto.EmploiRequest;
 import com.rawend.demo.Repository.TechnicienEmploiRepository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -53,5 +55,43 @@ public class EmploiService {
 
         return techniciens.stream().map(User::getEmail).collect(Collectors.toList());
     }
+    public void updateEmploiTechnicien(Long id, EmploiRequest request) {
+        TechnicienEmploi emploi = technicienEmploiRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Technicien avec cet ID introuvable"));
 
+        if (request.getJourRepos() != null) {
+            emploi.setJourRepos(JourRepos.valueOf(request.getJourRepos().toUpperCase()));
+        }
+        if (request.getHeureDebut() != null) {
+            emploi.setHeureDebut(request.getHeureDebut());
+        }
+        if (request.getHeureFin() != null) {
+            emploi.setHeureFin(request.getHeureFin());
+        }
+
+        technicienEmploiRepository.save(emploi);
+    }
+    public List<Map<String, Object>> getAllTechniciensAsMap() {
+        List<TechnicienEmploi> techniciens = technicienEmploiRepository.findAll();
+
+     
+        return techniciens.stream()
+            .map(technicien -> {
+              
+                Map<String, Object> technicienMap = new HashMap<>();
+              
+                technicienMap.put("email", technicien.getEmail());
+                technicienMap.put("phone", technicien.getPhone());
+                technicienMap.put("username", technicien.getUsername());
+                technicienMap.put("heureDebut", technicien.getHeureDebut());
+                technicienMap.put("heureFin", technicien.getHeureFin());
+                technicienMap.put("id", technicien.getId());
+                technicienMap.put("jourRepos", technicien.getJourRepos());
+               
+
+                return technicienMap;
+            })
+            .collect(Collectors.toList());  
+    }
 }
+

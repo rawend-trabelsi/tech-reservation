@@ -21,29 +21,33 @@ public class ReservationEntity {
 
     @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)
-    private ServiceEntity service;  // Lien avec le service
+    private ServiceEntity service;  
 
-    private Double prix;  // Prix final du service
+    private Double prix; 
 
     @Enumerated(EnumType.STRING)
-    private ModePaiement modePaiement;  // Utilisation de l'énumération externe
+    private ModePaiement modePaiement;  
 
-    private String localisation;  // Coordonnées GPS sous forme "latitude,longitude"
+    private String localisation;  
     
-    private LocalDateTime dateReservation;  // Date et heure choisies pour le service
-    private LocalDateTime dateCreation;  // Date et heure de la création de la réservation
+    private LocalDateTime dateReservation;  
+    private LocalDateTime dateCreation;  
 
-    private String titreService;  // Titre du service (ex : "Premium Wash")
+    private String titreService;  
 
-    private String email;  // Email de l'utilisateur
-    private String phone;  // Téléphone de l'utilisateur
+    private String email;  
+    private String phone;
+    private String duree;
+    @Column(name = "technicien_id", nullable = true) 
+    private Long technicienId;
+
 
     @PrePersist
     public void prePersist() {
         this.dateCreation = LocalDateTime.now();
         
         if (this.service != null) {
-            this.titreService = this.service.getTitre(); // Assigne le titre du service
+            this.titreService = this.service.getTitre(); 
         }
         
         if (this.user != null) {
